@@ -1,131 +1,73 @@
 import React, { Component, Fragment } from 'react';
 import _ from 'lodash';
+import { Menu, Dropdown, Button, Icon } from 'antd';
 import './App.css';
 import './A4.css';
-import { Card, Col, Row, Divider } from 'antd';
+import QuestionGenerator from './QuestionGenerator.js';
 
-const gridStyle = {
-  margin: '10px',
-  textAlign: 'center',
-};
-
-function multiGenerator() {
-  const bit = 4;
-  return {
-    mul1: _.random(1, Math.pow(10, bit)),
-    mul2: _.random(1, 9),
-    bit: 4,
-  };
-}
-
-class Question extends Component {
+class AddMore extends Component {
   constructor(props) {
     super(props);
 
-    const placeholderTd = (<td width={1/(this.props.bit+1)*100+'%'}>&nbsp;</td>);
-    const nonPlaceholderTd = (str) =>  (<td width={1/(this.props.bit+1)*100+'%'}>{str}</td>);
-
-    const mul1Str = String(this.props.mul1);
-    const mul2Str = String(this.props.mul2);
-    const lenOfMul1Str = _.size(mul1Str);
-    const lenOfMul2Str = _.size(mul2Str);
-
-    this.mul1 = _.times(this.props.bit+1, (n) => {
-        if (n === 0) return placeholderTd;
-        n = n-1;
-
-        if (n < this.props.bit - lenOfMul1Str) 
-          return placeholderTd;
-        else 
-          return nonPlaceholderTd(mul1Str[n - (this.props.bit - lenOfMul1Str)]);
-      });
-
-    this.mul2 = _.times(this.props.bit+1, (n) => {
-        if (n === 0) return nonPlaceholderTd('*');
-        n = n-1;
-
-        if (n < this.props.bit - lenOfMul2Str) 
-          return placeholderTd; 
-        else 
-          return nonPlaceholderTd(mul2Str[n - (this.props.bit - lenOfMul2Str)]);
-      });
-
-    this.placeholder = _.times(this.props.bit+1, () => {
-      return placeholderTd;
-    })
-  }
-
-  render() {
-    return (
-      <div style={gridStyle}>
-        <table border="1" width="100%">
-          <tbody>
-            <tr>{this.mul1}</tr>
-            <tr>{this.mul2}</tr>
-          </tbody>
-        </table>
-        <hr />
-        <table border="1" width="100%">
-          <tbody>
-            <tr>{this.placeholder}</tr>
-          </tbody>
-        </table>
-      </div>
+    this.addMenu = (
+      <Menu onClick={(e) => this.props.onAddClick(e.item.props.operator, e.item.props.bit)}>
+        <Menu.SubMenu title="乘法">
+          <Menu.Item key="0" operator={0} bit={3}>3位数</Menu.Item>
+          <Menu.Item key="1" operator={0} bit={4}>4位数</Menu.Item>       
+          <Menu.Item key="2" operator={0} bit={5}>5位数</Menu.Item>       
+        </Menu.SubMenu>
+          <Menu.SubMenu title="加法">
+          <Menu.Item key="0" operator={1} bit={3}>3位数</Menu.Item>
+          <Menu.Item key="1" operator={1} bit={4}>4位数</Menu.Item>       
+          <Menu.Item key="2" operator={1} bit={5}>5位数</Menu.Item>       
+        </Menu.SubMenu>
+          <Menu.SubMenu title="减法">
+          <Menu.Item key="0" operator={2} bit={3}>3位数</Menu.Item>
+          <Menu.Item key="1" operator={2} bit={4}>4位数</Menu.Item>       
+          <Menu.Item key="2" operator={2} bit={5}>5位数</Menu.Item>       
+        </Menu.SubMenu>
+      </Menu>
     );
-  }
-}
-
-class RowOfQuestion extends Component {
-  constructor(props) {
-    super(props);
-
-    const countPerRow = 3;
-
-    this.cols = _.times(countPerRow, (n) => {
-      const multiplier = multiGenerator();
-
-      return (
-        <Col span={24/countPerRow}>
-          <Question mul1={multiplier.mul1} mul2={multiplier.mul2} bit={multiplier.bit}/>
-        </Col>
-      );
-    });
   }
 
   render() {
     return (
       <Fragment>
-      <Row gutter={16}>
-        {this.cols}
-      </Row>
-      {!this.props.hideHr && <hr />}
+        <Dropdown overlay={this.addMenu} trigger={['click']}>
+          <Button type="primary" size="large" style={{ marginLeft: 8 }}>加一页<Icon type="down" /></Button>
+        </Dropdown>
+        <Button type="danger" size="large" onClick={this.props.onClearClick}>清除</Button>
       </Fragment>
     );
   }
-};
-
-class A4OfQuestion extends Component {
-  render() {
-    return (
-      <div className="page A4">
-        <RowOfQuestion />
-        <RowOfQuestion />
-        <RowOfQuestion />
-        <RowOfQuestion />
-        <RowOfQuestion />
-        <RowOfQuestion hideHr={true}/>
-      </div>
-    );
-  }  
 }
-
 class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      questionList : []
+    };
+  }
+
+  onAddClick(operator, bit) {
+    this.setState({questionList : [...this.state.questionList, (<QuestionGenerator key={_.uniqueId()} operator={operator} bit={bit}/>)]});
+  }
+
+  onClearClick() {
+    this.setState({questionList: []});
+  }
+
   render() {
     return (
       <div className="App">
-        <A4OfQuestion />
-        <A4OfQuestion />
-        <A4OfQuestion />
+        <div className="fixedLayer no-print">
+          <AddMore 
+            onAddClick={this.onAddClick.bind(this)}
+            onClearClick={this.onClearClick.bind(this)}
+            />
+        </div>
+        {this.state.questionList}
       </div>
     );
   }
