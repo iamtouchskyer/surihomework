@@ -34,15 +34,15 @@ function subGenerator(bit) {
 }
 
 function getGenerator(operatorIndex) {
-  const opertors = [multiGenerator, addGenerator, subGenerator];
+  const operators = [multiGenerator, addGenerator, subGenerator];
 
-  return opertors[operatorIndex];
+  return operators[operatorIndex];
 }
 
 function getGeneratorSymbol(operatorIndex) {
-  const opertors = ['*', '+', '-'];
+  const operators = ['*', '+', '-'];
 
-  return opertors[operatorIndex];
+  return operators[operatorIndex];
 }
 
 class Question extends Component {
@@ -138,16 +138,29 @@ class RowOfQuestion extends Component {
 
 class QuestionGenerator extends Component {
  render() {
+   if (this.props.operator === 3) {
     return (
         <div className="page A4">
-          <RowOfQuestion {...this.props}/>
-          <RowOfQuestion {...this.props}/>
-          <RowOfQuestion {...this.props}/>
-          <RowOfQuestion {...this.props}/>
-          <RowOfQuestion {...this.props}/>
-          <RowOfQuestion {...this.props} hideHr={true}/>
+          <RowOfQuestion {...this.props} operator={0} />
+          <RowOfQuestion {...this.props} operator={1} />
+          <RowOfQuestion {...this.props} operator={2} />
+          <RowOfQuestion {...this.props} operator={0} />
+          <RowOfQuestion {...this.props} operator={1} />
+          <RowOfQuestion {...this.props} operator={2} hideHr={true} />
         </div>
     );
+   } else {
+      return (
+          <div className="page A4">
+            <RowOfQuestion {...this.props}/>
+            <RowOfQuestion {...this.props}/>
+            <RowOfQuestion {...this.props}/>
+            <RowOfQuestion {...this.props}/>
+            <RowOfQuestion {...this.props}/>
+            <RowOfQuestion {...this.props} hideHr={true}/>
+          </div>
+      );
+    }
   } 
 };
 
