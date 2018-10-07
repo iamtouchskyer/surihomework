@@ -11,27 +11,19 @@ class AddMore extends Component {
 
     this.addMenu = (
       <Menu onClick={(e) => this.props.onAddClick(e.item.props.operator, e.item.props.bit)}>
-        <Menu.SubMenu title="随机">
-          <Menu.Item key="0" operator={3} bit={3}>3位数</Menu.Item>
-          <Menu.Item key="1" operator={3} bit={4}>4位数</Menu.Item>       
-          <Menu.Item key="2" operator={3} bit={5}>5位数</Menu.Item>       
-        </Menu.SubMenu>
-        <Menu.SubMenu title="乘法">
-          <Menu.Item key="0" operator={0} bit={3}>3位数</Menu.Item>
-          <Menu.Item key="1" operator={0} bit={4}>4位数</Menu.Item>       
-          <Menu.Item key="2" operator={0} bit={5}>5位数</Menu.Item>       
-        </Menu.SubMenu>
-          <Menu.SubMenu title="加法">
-          <Menu.Item key="0" operator={1} bit={3}>3位数</Menu.Item>
-          <Menu.Item key="1" operator={1} bit={4}>4位数</Menu.Item>       
-          <Menu.Item key="2" operator={1} bit={5}>5位数</Menu.Item>       
-        </Menu.SubMenu>
-          <Menu.SubMenu title="减法">
-          <Menu.Item key="0" operator={2} bit={3}>3位数</Menu.Item>
-          <Menu.Item key="1" operator={2} bit={4}>4位数</Menu.Item>       
-          <Menu.Item key="2" operator={2} bit={5}>5位数</Menu.Item>       
-        </Menu.SubMenu>
+        {this.generateSubMenu("随机", 3, 3, 7)}
+        {this.generateSubMenu("乘法", 0, 3, 6)}
+        {this.generateSubMenu("加法", 1, 3, 6)}
+        {this.generateSubMenu("减法", 2, 3, 6)}
       </Menu>
+    );
+  }
+
+  generateSubMenu = (title, operatorIndex, start, end) => {
+    return (
+      <Menu.SubMenu title={title}>
+        {_.times(end - start + 1, (n) => (<Menu.Item key={n} operator={operatorIndex} bit={start+n}>{start+n}位数</Menu.Item>))}
+      </Menu.SubMenu>
     );
   }
 
@@ -39,7 +31,7 @@ class AddMore extends Component {
     return (
       <Fragment>
         <Dropdown overlay={this.addMenu} trigger={['click']}>
-          <Button type="primary" size="large" style={{ marginLeft: 8 }}>加一页<Icon type="down" /></Button>
+          <Button type="primary" size="large" style={{ marginLeft: 8 }}>加十页<Icon type="down" /></Button>
         </Dropdown>
         <Button type="danger" size="large" onClick={this.props.onClearClick}>清除</Button>
       </Fragment>
@@ -56,7 +48,7 @@ class App extends Component {
   }
 
   onAddClick(operator, bit) {
-    this.setState({questionList : [...this.state.questionList, (<QuestionGenerator key={_.uniqueId()} operator={operator} bit={bit}/>)]});
+    this.setState({questionList : [...this.state.questionList, ...(_.times(10, (n) => (<QuestionGenerator key={_.uniqueId()} operator={operator} bit={bit}/>)))]});
   }
 
   onClearClick() {
