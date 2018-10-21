@@ -43,16 +43,62 @@ class App extends Component {
     super(props);
 
     this.state = {
-      questionList : []
+      questionList : [],
+      readingHistory: null
     };
   }
 
   onAddClick(operator, bit) {
-    this.setState({questionList : [...this.state.questionList, ...(_.times(10, (n) => (<QuestionGenerator key={_.uniqueId()} operator={operator} bit={bit}/>)))]});
+    this.setState({questionList : [...this.state.questionList, ...(_.times(10, () => (<QuestionGenerator key={_.uniqueId()} operator={operator} bit={bit} />)))]});
   }
 
   onClearClick() {
     this.setState({questionList: []});
+  }
+
+  onReadingHistoryClick() {
+    this.setState({readingHistory: this.renderReadingHistory(10)});
+  }
+  onReadingHistoryClear() {
+    this.setState({readingHistory: null});
+  }
+
+  renderReadingHistory(nPages) {
+    const readingTable = () => (
+      <table border="1">
+        <tr>
+          <th width="10%">日期<br/>(Date)</th>
+          <th width="50%">书名<br/>(Book title)</th>
+          <th width="10%">阅读时间<br/>(Minute)</th>
+          <th width="10%">累计阅读时间<br/>(Total Time)</th>
+          <th width="10%">家长签名<br/>(Parent signature)</th>
+        </tr>
+        {_.times(5, () => readingColumn)}
+      </table>
+    );
+
+    const readingColumn = (
+      <tr>
+        <td width="10%">&nbsp;<br/>&nbsp;</td>
+        <td width="50%"></td>
+        <td width="10%"></td>
+        <td width="10%"></td>
+        <td width="10%"></td>
+      </tr>
+    );
+
+    return (
+      _.times(nPages, () => {
+        return (
+          <div className="page A4">
+            {readingTable()}
+            <br />
+            <br />
+            {readingTable()}
+          </div>
+        );
+      })
+    );
   }
 
   render() {
@@ -63,8 +109,15 @@ class App extends Component {
             onAddClick={this.onAddClick.bind(this)}
             onClearClick={this.onClearClick.bind(this)}
             />
+          <br />
+          <br />
+          <Button.Group>
+            <Button type="primary" size="large" style={{ marginLeft: 8 }} onClick={this.onReadingHistoryClick.bind(this)}>阅读历史</Button>
+            <Button type="danger" size="large" style={{ marginLeft: 8 }} onClick={this.onReadingHistoryClear.bind(this)}>清除阅读历史</Button>
+          </Button.Group>
         </div>
         {this.state.questionList}
+        {this.state.readingHistory}
       </div>
     );
   }
