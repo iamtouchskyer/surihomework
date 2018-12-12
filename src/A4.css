@@ -27,9 +27,10 @@ body {
   width: 42cm;
   height: 29.7cm;  
 }
+
 @media print {
   body, page {
-    margin: 0;
+    margin: 0 auto;
     box-shadow: 0;
   }
 }
