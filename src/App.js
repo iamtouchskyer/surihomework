@@ -11,10 +11,11 @@ class AddMore extends Component {
 
     this.addMenu = (
       <Menu onClick={(e) => this.props.onAddClick(e.item.props.operator, e.item.props.bit)}>
-        {this.generateSubMenu("随机", 3, 3, 8)}
-        {this.generateSubMenu("乘法", 0, 3, 8)}
-        {this.generateSubMenu("加法", 1, 3, 8)}
-        {this.generateSubMenu("减法", 2, 3, 8)}
+        {this.generateSubMenu("随机", 0, 3, 8)}
+        {this.generateSubMenu("乘法", 1, 3, 8)}
+        {this.generateSubMenu("除法", 2, 3, 8)}
+        {this.generateSubMenu("加法", 3, 3, 8)}
+        {this.generateSubMenu("减法", 4, 3, 8)}
       </Menu>
     );
   }
